@@ -1,18 +1,22 @@
 #include "Layout.hpp"
 
+
+
 void Layout::Add(Widget *widget)
 {
     gtk_container_add(m_container, widget->m_widget);
+    widget->OnAdd();
 }
 
 void Layout::Add(Layout *widget)
 {
     gtk_container_add(m_container, widget->m_widget);
+    widget->OnAdd();
 }
 
 void Layout::addWidget(GtkWidget *widget)
 {
-   // gtk_container_add(GTK_CONTAINER(m_widget), widget);
+   gtk_container_add(GTK_CONTAINER(m_widget), widget);
 }
 
 Button *Layout::GetButtonByID(const std::string &id)
@@ -87,7 +91,7 @@ Button *Layout::CreateButton(const std::string &text, const std::string &id)
     std::shared_ptr<Button> button = std::make_shared<Button>(text);
     button.get()->SetId(id);
     m_childs.push_back(button);
-    button->m_window = m_window;
+    button->m_mainWindow = m_mainWindow;
     return button.get();
 }
 
@@ -97,7 +101,7 @@ CheckButton *Layout::CreateCheckButton(const std::string &text, const std::strin
     std::shared_ptr<CheckButton> button = std::make_shared<CheckButton>(text);
     button.get()->SetId(id);
     m_childs.push_back(button);
-    button->m_window = m_window;
+    button->m_mainWindow = m_mainWindow;
     return button.get();
 }
 
@@ -107,7 +111,7 @@ RadioButton *Layout::CreateRadioButton(const std::string &text, const std::strin
     std::shared_ptr<RadioButton> button = std::make_shared<RadioButton>(text);
     button.get()->SetId(id);
     m_childs.push_back(button);
-    button->m_window = m_window;
+    button->m_mainWindow = m_mainWindow;
     return button.get();
 }
 
@@ -117,7 +121,7 @@ ToggleButton *Layout::CreateToggleButton(const std::string &text, const std::str
     std::shared_ptr<ToggleButton> button = std::make_shared<ToggleButton>(text);
     button.get()->SetId(id);
     m_childs.push_back(button);
-    button->m_window = m_window;
+    button->m_mainWindow = m_mainWindow;
     return button.get();
 }
 
@@ -126,7 +130,7 @@ Label *Layout::CreateLabel(const std::string &text, const std::string &ID)
     std::shared_ptr<Label> label = std::make_shared<Label>(text);
     label.get()->SetId(ID);
     m_childs.push_back(label);
-    label->m_window = m_window;
+    label->m_mainWindow = m_mainWindow;
     return label.get();
 }
 
@@ -137,7 +141,7 @@ TextEdit *Layout::CreateTextEdit(const std::string &text, const std::string &ID)
     textedit.get()->SetId(ID);
     textedit.get()->SetText(text);
     m_childs.push_back(textedit);
-    textedit->m_window = m_window;
+    textedit->m_mainWindow = m_mainWindow;
     return textedit.get();
 }
 
@@ -148,7 +152,7 @@ TextView *Layout::CreateTextView(const std::string &text, const std::string &ID)
     textview.get()->SetId(ID);
     textview.get()->AddText(text);
     m_childs.push_back(textview);
-    textview->m_window = m_window;
+    textview->m_mainWindow = m_mainWindow;
     return textview.get();
 }
 
@@ -158,9 +162,21 @@ MenuBar* Layout::CreateMenuBar(const std::string &ID)
     std::shared_ptr<MenuBar> menubar = std::make_shared<MenuBar>();
     menubar.get()->SetId(ID);
     m_childs.push_back(menubar);
-    menubar->m_window = m_window;
+    menubar->m_mainWindow = m_mainWindow;
     return menubar.get();
 }
+
+
+Menu *Layout::CreateMenu(const std::string &ID)
+{
+
+    std::shared_ptr<Menu> menu = std::make_shared<Menu>();
+    menu.get()->SetId(ID);
+    m_childs.push_back(menu);
+    menu->m_mainWindow = m_mainWindow;
+    return menu.get();
+}
+
 
 ProgressBar* Layout::CreateProgressBar(const std::string &ID)
 {
@@ -168,7 +184,7 @@ ProgressBar* Layout::CreateProgressBar(const std::string &ID)
     std::shared_ptr<ProgressBar> progressbar = std::make_shared<ProgressBar>();
     progressbar.get()->SetId(ID);
     m_childs.push_back(progressbar);
-    progressbar->m_window = m_window;
+    progressbar->m_mainWindow = m_mainWindow;
     return progressbar.get();
 
 }
@@ -179,7 +195,7 @@ LevelBar* Layout::CreateLevelBar(const std::string &ID)
     std::shared_ptr<LevelBar> levelbar = std::make_shared<LevelBar>();
     levelbar.get()->SetId(ID);
     m_childs.push_back(levelbar);
-    levelbar->m_window = m_window;
+    levelbar->m_mainWindow = m_mainWindow;
     return levelbar.get();
 
 
@@ -191,7 +207,7 @@ LevelBar* Layout::CreateLevelBar(double min_value, double max_value,const std::s
     std::shared_ptr<LevelBar> levelbar = std::make_shared<LevelBar>(min_value,max_value);
     levelbar.get()->SetId(ID);
     m_childs.push_back(levelbar);
-    levelbar->m_window = m_window;
+    levelbar->m_mainWindow = m_mainWindow;
     return levelbar.get();
 
 }
@@ -206,15 +222,17 @@ FrameLayout::FrameLayout(const std::string &title)
     m_container = GTK_CONTAINER(m_widget);
 }
 
-void FrameLayout::Add(Widget *widget)
-{
-    gtk_container_add(m_container, widget->m_widget);
-}
+// void FrameLayout::Add(Widget *widget)
+// {
+//     gtk_container_add(m_container, widget->m_widget);
+//     widget->OnAdd();
+// }
 
-void FrameLayout::Add(Layout *widget)
-{
-    gtk_container_add(m_container, widget->m_widget);
-}
+// void FrameLayout::Add(Layout *widget)
+// {
+//     gtk_container_add(m_container, widget->m_widget);
+//     widget->OnAdd();
+// }
 
 BoxLayout::BoxLayout(Orientation orientation, int spacing)
 {
@@ -263,6 +281,7 @@ FixedLayout::FixedLayout()
 void FixedLayout::Add(Widget *widget, int x, int y)
 {
     gtk_fixed_put(m_fixed, widget->m_widget, x, y);
+    widget->OnAdd();
 }
 
 void FixedLayout::Add(Widget *widget, int x, int y, int width, int height)
@@ -270,7 +289,15 @@ void FixedLayout::Add(Widget *widget, int x, int y, int width, int height)
     assert(widget->m_widget);
     gtk_fixed_put(m_fixed, widget->m_widget, x, y);
     gtk_widget_set_size_request(widget->m_widget, width, height);
+    widget->OnAdd();
 }
+
+
+
+//************************************************************************
+// GridLayout
+//************************************************************************
+
 
 GridLayout::GridLayout()
 {
@@ -285,6 +312,7 @@ GridLayout::GridLayout()
 void GridLayout::Add(Widget *widget, int left, int top, int width, int height)
 {
     gtk_grid_attach(m_grid, widget->m_widget, left, top, width, height);
+    widget->OnAdd();
 }
 
 void GridLayout::SetRowSpacing(int spacing)

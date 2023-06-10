@@ -402,7 +402,7 @@ FrameLayout* Window::CreateFrameLayout(const std::string &label, const std::stri
     
     std::shared_ptr<FrameLayout> layout = std::make_shared<FrameLayout>(label);
     layout.get()->SetId(id);
-    layout.get()->m_window = this;
+    layout.get()->m_mainWindow = this;
     m_childs.push_back(layout);
     return layout.get();
 }
@@ -413,7 +413,7 @@ BoxLayout* Window::CreateBoxLayout(Orientation orientation, int spacing, const s
     std::shared_ptr<BoxLayout> layout = std::make_shared<BoxLayout>(orientation, spacing);
     layout.get()->SetId(id);
     m_childs.push_back(layout);
-    layout.get()->m_window = this;
+    layout.get()->m_mainWindow = this;
     return layout.get();
 
 }
@@ -424,7 +424,7 @@ FixedLayout* Window::CreateFixedLayout(const std::string &id)
     std::shared_ptr<FixedLayout> layout = std::make_shared<FixedLayout>();
     layout.get()->SetId(id);
     m_childs.push_back(layout);
-    layout.get()->m_window = this;
+    layout.get()->m_mainWindow = this;
     return layout.get();
 
     
@@ -436,7 +436,7 @@ ScrollLayout* Window::CreateScrollLayout(const std::string &id)
         std::shared_ptr<ScrollLayout> layout = std::make_shared<ScrollLayout>();
         layout.get()->SetId(id);
         m_childs.push_back(layout);
-        layout.get()->m_window = this;
+        layout.get()->m_mainWindow = this;
         return layout.get();
     
 }
@@ -446,7 +446,7 @@ ViewPortLayout* Window::CreateViewPortLayout(const std::string &id)
     std::shared_ptr<ViewPortLayout> layout = std::make_shared<ViewPortLayout>();
     layout.get()->SetId(id);
     m_childs.push_back(layout);
-    layout.get()->m_window = this;
+    layout.get()->m_mainWindow = this;
     return layout.get();
     
 }
@@ -458,7 +458,7 @@ GridLayout* Window::CreateGridLayout(const std::string &id)
     layout.get()->SetId(id);
     m_childs.push_back(layout);
 
-    layout.get()->m_window = this;
+    layout.get()->m_mainWindow = this;
     return layout.get();
 
 
@@ -470,7 +470,7 @@ RadioGroup* Window::CreateRadioGroup(const std::string &label, Orientation orien
     std::shared_ptr<RadioGroup> group = std::make_shared<RadioGroup>(label,orientation,spacing);
     group.get()->SetId(id);
     m_childs.push_back(group);
-    group.get()->m_window = this;
+    group.get()->m_mainWindow = this;
     return group.get();
 
 }
@@ -481,7 +481,7 @@ CheckGroup* Window::CreateCheckGroup(const std::string &label, Orientation orien
     std::shared_ptr<CheckGroup> group = std::make_shared<CheckGroup>(label,orientation,spacing);
     group.get()->SetId(id);
     m_childs.push_back(group);
-    group.get()->m_window = this;
+    group.get()->m_mainWindow = this;
     return group.get();
 
 
@@ -493,7 +493,7 @@ GroupBox* Window::CreateGroupBox(const std::string &label, Orientation orientati
         std::shared_ptr<GroupBox> group = std::make_shared<GroupBox>(label,orientation,spacing);
         group.get()->SetId(id);
         m_childs.push_back(group);
-        group.get()->m_window = this;
+        group.get()->m_mainWindow = this;
         return group.get();
     
     

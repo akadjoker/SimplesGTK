@@ -4,16 +4,18 @@
 int on_button_press_event(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
     Widget *w = (Widget *)data;
-    std::cout << "on_button_press_event" << std::endl;
+    if (w->OnMousePressed)
+        return w->OnMousePressed(event->button.x, event->button.y, event->button.button);
+    
     return false;
 }
 
 void Widget::AddMouseEvents()
 {
     //g_signal_connect(m_widget, "button-press-event", G_CALLBACK(on_button_press_event), this);
-    gtk_widget_add_events(m_widget, GDK_BUTTON_PRESS_MASK);
-    g_signal_connect_swapped(G_OBJECT(m_widget), "button-press-event", G_CALLBACK(on_button_press_event), this);  
-//    g_signal_connect(G_OBJECT(m_widget), "button-press-event", G_CALLBACK(on_button_press_event), this);
+    //gtk_widget_add_events(m_widget, GDK_BUTTON_PRESS_MASK);
+   // g_signal_connect_swapped(G_OBJECT(m_widget), "button-press-event", G_CALLBACK(on_button_press_event), this);  
+    g_signal_connect(m_widget, "button-press-event", G_CALLBACK(on_button_press_event), this);
 
 }
 
@@ -74,6 +76,11 @@ Widget::~Widget()
 Widget* Widget::GetLayout()
 {
     return m_layout;
+}
+
+void Widget::OnAdd()
+{
+    //std::cout << "OnAdd"<< m_id << std::endl;   
 }
 
 void Widget::SetTag(int tag)

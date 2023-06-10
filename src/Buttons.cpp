@@ -27,12 +27,12 @@ IButton::~IButton()
 void Button::DoClick()
 {
     assert(m_widget);
-    assert(m_window);
+    assert(m_mainWindow);
 
     Event event;
     event.type        = Event::ButtonClick;
     event.buttonClick.button = this;
-    m_window->pushEvent(event);
+    m_mainWindow->pushEvent(event);
 
     if (OnClick)
         OnClick();
@@ -41,13 +41,13 @@ void Button::DoClick()
 void Button::DoCheck(bool value)
 {
     assert(m_widget);
-    assert(m_window);
+    assert(m_mainWindow);
 
     Event event;
     event.type        = Event::ButtonCheck;
     event.buttonCheck.button = this;
     event.buttonCheck.checked = value;
-    m_window->pushEvent(event);
+    m_mainWindow->pushEvent(event);
 
     if (OnCheck)
         OnCheck(value);

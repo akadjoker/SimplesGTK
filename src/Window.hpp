@@ -6,6 +6,7 @@
 #include "Buttons.hpp"
 #include "Text.hpp"
 #include "Group.hpp"
+#include "Menus.hpp"
 
 /*
 
@@ -186,6 +187,7 @@ protected:
     friend class FolderChooser;
     friend class Dialog;
     friend class Application;
+    friend class Menu;
     friend gboolean on_window_configure_event(GtkWidget *widget, GdkEventConfigure *event, gpointer user_data);
 
     GtkWindow *m_window;
@@ -193,8 +195,6 @@ protected:
     bool isMainWindow{false};
     bool useLoop{false};
     std::vector<std::shared_ptr<Dialog>> m_dialogs;
-   /// std::vector<std::shared_ptr<Layout>> m_layouts;
-  //  std::vector<std::shared_ptr<Window>> m_childs;
     std::queue<Event> m_events;  
 
     int m_width{0};

@@ -16,6 +16,8 @@ public:
     virtual void Add(Widget *widget);
     virtual void Add(Layout *layout);
 
+  
+
     void SetBoder(int border);
 
     bool Contains(const std::string &id) const;
@@ -37,6 +39,7 @@ public:
     TextView *CreateTextView(const std::string &text, const std::string &ID = "TextView");
 
     MenuBar *CreateMenuBar(const std::string &ID = "MenuBar");
+    Menu    *CreateMenu( const std::string &ID="Menu");
 
     ProgressBar *CreateProgressBar(const std::string &ID = "ProgressBar");
     LevelBar *CreateLevelBar(const std::string &ID = "LevelBar");
@@ -61,8 +64,8 @@ class GTK_API_EXPORT FrameLayout : public Layout
 public:
     FrameLayout(const std::string &title);
 
-    void Add(Widget *widget) override;
-    void Add(Layout *layout) override;
+    // void Add(Widget *widget) override;
+    // void Add(Layout *layout) override;
 
 private:
     GtkFrame *m_frame;
@@ -95,6 +98,7 @@ public:
 
     void Add(Widget *widget, int x, int y);
     void Add(Widget *widget, int x, int y, int width, int height);
+    
 
 protected:
     GtkFixed *m_fixed;

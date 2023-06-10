@@ -85,6 +85,22 @@ enum class Align
     Fill
 };
 
+
+
+enum class Gravity
+{
+    TopLeft=1,
+    Top,
+    TopRigh,
+    Left,
+    Center,
+    Right,
+    BottomLeft,
+    Bottom,
+    BottomRight,
+    Static
+};
+
 enum class ShadowType
 {
     None,
@@ -195,7 +211,8 @@ public:
     
     Widget    *GetLayout() ;
    
-
+    virtual void OnAdd();//event handler if this widget is on Container so, call show all on this widget
+    virtual void AddMouseEvents();
 
 
     void SetTag(int tag) ;
@@ -212,11 +229,13 @@ public:
     void SetId(const std::string &id) ;
     const std::string &GetId() const ;
 
-    void AddMouseEvents();
+    
 
 
     std::function<bool()> OnClick;  
     std::function<bool(bool)> OnCheck;   
+
+    std::function<bool(int x, int y,int button)> OnMousePressed;   
 
     std::function<bool(const std::string &text)> OnTextReturn;
     std::function<bool(const std::string &text)> OnTextChange;
@@ -234,9 +253,13 @@ protected:
     friend class Group;
     friend class Layout;
     friend class GridLayout;
+    friend class Menu;
+    friend class MenuItem;
+    friend class MenuBar;
     GtkWidget   *m_widget{NULL};
     Widget      *m_layout{nullptr};
-    Window      *m_window{nullptr};
+    Window      *m_mainWindow{nullptr};
+    bool        isShow{false};
     int m_tag{0};
     std::string m_id;
 };

@@ -1,4 +1,5 @@
 #include "Menus.hpp"
+#include "Window.hpp"
 
 
 void on_menu_activate(GtkWidget *widget, gpointer data)
@@ -20,6 +21,12 @@ void on_menu_toggled(GtkWidget *widget, gpointer data)
 
 }
 
+void on_menu_item_clicked(GtkMenuItem* menu_item, gpointer user_data)
+{
+    g_print("Item de menu selecionado\n");
+    
+}
+
 //********************************************************************************
 //  Menu Shell
 //********************************************************************************
@@ -32,16 +39,19 @@ MenuShell::MenuShell()
 
 MenuShell::~MenuShell()
 {
+
   //  std::cout << "MenuShell::~MenuShell()" << std::endl;
 }
 
 void MenuShell::Append(MenuItem *item)
 {
       gtk_menu_shell_append(m_menuShell, item->m_widget);
+   //   gtk_widget_show_all(m_widget);
 }
 void MenuShell::Append(IMenuItem *item)
 {
       gtk_menu_shell_append(m_menuShell, item->m_widget);
+    //  gtk_widget_show_all(m_widget);
 }
 
 
@@ -234,18 +244,100 @@ Menu::Menu():MenuShell()
 {
     m_widget    =  gtk_menu_new();
     m_menuShell =  GTK_MENU_SHELL(m_widget);
+    m_menu      =  GTK_MENU(m_widget);
+    
 }
 
+void Menu::OnAdd()
+{
+    gtk_widget_show_all(m_widget);
+    isShow = true;
+}
+
+void Menu::Popup()
+{
+    if (!isShow)
+        OnAdd();
+    //gtk_menu_popup(m_menu, NULL, NULL, NULL, NULL, 0, gtk_get_current_event_time());
+    gtk_menu_popup_at_pointer(m_menu, NULL);
+     
+}
+
+void Menu::Popup(Widget *widget,int x, int y, Gravity widgetAnchor, Gravity menuAnchor)
+{
+
+    if (!isShow)
+        OnAdd();
 
 
+        // GdkRectangle rect = {20, 20, 1, 1};
+        // GdkGravity rect_anchor = GDK_GRAVITY_NORTH_WEST;
+        // GdkGravity menu_anchor = GDK_GRAVITY_SOUTH_WEST;
 
+        // gtk_menu_popup_at_rect(m_menu, gtk_widget_get_window(widget->m_widget), &rect, rect_anchor, menu_anchor,NULL);
+
+
+    
+     GdkGravity widget_anchor=(GdkGravity)widgetAnchor;
+     GdkGravity menu_anchor  =(GdkGravity)menuAnchor;
+
+     GdkRectangle rect;
+     rect.x = x;
+     rect.y = y;
+     rect.width = 1;
+     rect.height = 1;
+
+     gtk_menu_popup_at_rect(m_menu,  gtk_widget_get_window(widget->m_widget) , &rect, widget_anchor, menu_anchor, NULL);
+
+
+}
+
+void Menu::Popup(Widget *widget,Gravity widgetAnchor, Gravity menuAnchor)
+{
+    if (!isShow)
+        OnAdd();
+
+    GdkGravity widget_anchor=(GdkGravity)widgetAnchor;
+    GdkGravity menu_anchor  =(GdkGravity)menuAnchor;
+
+    gtk_menu_popup_at_widget(m_menu, widget->m_widget, widget_anchor, menu_anchor, NULL);
+
+     
+}
 
 Menu::~Menu()
 {
-    m_items.clear();
+        m_items.clear();
    // std::cout << "Menu::~Menu()" << std::endl;
 }
 
+MenuItem* Menu::CreateItem(const std::string &label,const std::string &ID, bool mnemonic,int tag)
+{
+    std::shared_ptr<MenuItem> menu = std::make_shared<MenuItem>(label,mnemonic,tag);
+    menu.get()->SetId(ID);
+    m_items.push_back(menu);
+    return menu.get();
+}
+
+CheckMenuItem* Menu::CreateCheckItem(bool checked,const std::string &label, const std::string &ID, bool mnemonic,int tag)
+{
+    
+    std::shared_ptr<CheckMenuItem> menu = std::make_shared<CheckMenuItem>(checked,label,mnemonic,tag);
+    menu.get()->SetId(ID);
+    m_items.push_back(menu);
+    return menu.get();
+
+}
+
+RadioMenuItem* Menu::CreateRadioItem(const std::string &label, const std::string &ID, bool mnemonic,int tag)
+{
+    
+    std::shared_ptr<RadioMenuItem> menu = std::make_shared<RadioMenuItem>(label,mnemonic,tag);
+    menu.get()->SetId(ID);
+    m_items.push_back(menu);
+    return menu.get();
+
+}
 
 //********************************************************************************
 //  Sub Menu
@@ -266,6 +358,8 @@ SubMenu::SubMenu(const std::string &id, const std::string &itemId,const  std::st
     m_main_item.get()->m_index = 0;
     m_items.push_back(m_main_item);
 }
+
+
 
 SubMenu::~SubMenu()
 {
@@ -400,33 +494,7 @@ Menu* MenuBar::CreateMenu( const std::string &ID)
      return menu.get();
 }
 
-MenuItem* MenuBar::CreateItem(const std::string &label,const std::string &ID, bool mnemonic,int tag)
-{
-    std::shared_ptr<MenuItem> menu = std::make_shared<MenuItem>(label,mnemonic,tag);
-    menu.get()->SetId(ID);
-    m_items.push_back(menu);
-    return menu.get();
-}
 
-CheckMenuItem* MenuBar::CreateCheckItem(bool checked,const std::string &label, const std::string &ID, bool mnemonic,int tag)
-{
-    
-    std::shared_ptr<CheckMenuItem> menu = std::make_shared<CheckMenuItem>(checked,label,mnemonic,tag);
-    menu.get()->SetId(ID);
-    m_items.push_back(menu);
-    return menu.get();
-
-}
-
-RadioMenuItem* MenuBar::CreateRadioItem(const std::string &label, const std::string &ID, bool mnemonic,int tag)
-{
-    
-    std::shared_ptr<RadioMenuItem> menu = std::make_shared<RadioMenuItem>(label,mnemonic,tag);
-    menu.get()->SetId(ID);
-    m_items.push_back(menu);
-    return menu.get();
-
-}
 
 SubMenu* MenuBar::CreateSubMenu(const std::string &id,const std::string &itemId, const std::string &itemLabel, bool mnemonic,int tag)
 {

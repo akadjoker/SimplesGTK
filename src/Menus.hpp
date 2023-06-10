@@ -108,6 +108,10 @@ public:
 
     void Append(IMenuItem *item);
     void Append(MenuItem *item);
+
+
+
+
 protected:
     friend class MenuBar;
     friend class Menu;
@@ -115,6 +119,7 @@ protected:
     friend class CheckMenuItem;
     friend class RadioMenuItem;
     GtkMenuShell *m_menuShell{nullptr};
+    
 };
 
 class Menu : public MenuShell
@@ -124,6 +129,16 @@ public:
     Menu();
     virtual ~Menu();
 
+    virtual void OnAdd() override;
+
+    void Popup();
+    void Popup(Widget *widget,Gravity widgetAnchor, Gravity menuAnchor);
+    void Popup(Widget *widget,int x, int y, Gravity widgetAnchor, Gravity menuAnchor);
+
+    MenuItem *CreateItem(const std::string &label, const std::string &ID = "MenuItem", bool mnemonic = false,int tag=0);
+    CheckMenuItem *CreateCheckItem(bool checked,const std::string &label, const std::string &ID = "CheckMenuItem", bool mnemonic = false,int tag=0);
+    RadioMenuItem *CreateRadioItem(const std::string &label, const std::string &ID = "RadioMenuItem", bool mnemonic = false,int tag=0);
+
 protected:
     friend class MenuBar;
     friend class MenuItem;
@@ -131,7 +146,7 @@ protected:
     friend class RadioMenuItem;
     friend class MenuShell;
     GtkMenu *m_menu;
-    std::vector<std::shared_ptr<IMenuItem>> m_items;
+   std::vector<std::shared_ptr<IMenuItem>> m_items;
 };
 
 class SubMenu : public Menu
@@ -168,10 +183,7 @@ public:
     virtual ~MenuBar();
 
     Menu *CreateMenu(const std::string &ID = "Menu");
-    MenuItem *CreateItem(const std::string &label, const std::string &ID = "MenuItem", bool mnemonic = false,int tag=0);
-    CheckMenuItem *CreateCheckItem(bool checked,const std::string &label, const std::string &ID = "CheckMenuItem", bool mnemonic = false,int tag=0);
-    RadioMenuItem *CreateRadioItem(const std::string &label, const std::string &ID = "RadioMenuItem", bool mnemonic = false,int tag=0);
-
+  
     SubMenu *CreateSubMenu(const std::string &id, const std::string &itemId, const std::string &itemLabel, bool mnemonic = false,int tag=0);
 
 protected:

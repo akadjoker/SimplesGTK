@@ -78,6 +78,8 @@ void create_main(Application *app)
     fixed->AddMouseEvents();
 
 
+
+
     MenuBar *menuBar = window->CreateMenuBar("MenuBar");
 
 
@@ -126,9 +128,29 @@ void create_main(Application *app)
     fixed->Add(menuBar,0,0,800,30);
 
     
+    Menu * popUp = window->CreateMenu( "idPopUp");
+          MenuItem  *item= popUp->CreateItem("Item 1", "idItem1");
+          popUp->Append(item);
+                     item= popUp->CreateItem("Item 2", "idItem2");
+          popUp->Append(item);
+
+     
+
 
     Button *b = fixed->CreateButton("button1", "Button 1");
      fixed->Add(b,100,40,100,30);
+     b->OnClick  = [&]() -> bool
+     {
+          popUp->Popup(fixed,500,500,Gravity::Center,Gravity::Center);
+         std::cout << "Button 1 Clicked" << std::endl;
+         return true;
+     };
+     fixed->OnMousePressed = [&](int x, int y, int button) -> bool
+     {
+        popUp->Popup(fixed,x,y,Gravity::Top,Gravity::TopLeft);
+         std::cout << "Mouse Pressed: " << x << "," << y << std::endl;
+         return true;
+     };
 
     ProgressBar *p = fixed->CreateProgressBar("progressBar");
     p->SetOrientation(Orientation::Vertical);
