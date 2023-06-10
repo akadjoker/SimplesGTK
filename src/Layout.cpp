@@ -167,6 +167,16 @@ MenuBar* Layout::CreateMenuBar(const std::string &ID)
 }
 
 
+ToolBar* Layout::CreateToolBar(ToolBarStyle style,const std::string &ID)
+{
+    std::shared_ptr<ToolBar> toolbar = std::make_shared<ToolBar>(style);
+    toolbar.get()->SetId(ID);
+    m_childs.push_back(toolbar);
+    toolbar->m_mainWindow = m_mainWindow;
+    return toolbar.get();
+}
+
+
 Menu *Layout::CreateMenu(const std::string &ID)
 {
 

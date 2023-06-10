@@ -35,67 +35,6 @@ void on_folder_selected(GtkFileChooser *chooser, gint response_id, gpointer user
     folderChooser->Close();
 }
 
-gboolean on_button_press_event(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
-{
-    gdouble x = event->x;
-    gdouble y = event->y;
-    int button = event->button;
-    Window *window = (Window *)user_data;
-    if (window->OnMousePress)
-        window->OnMousePress(x, y, button);
-    return TRUE;
-}
-
- gboolean on_button_release_event(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
-{
-    gdouble x = event->x;
-    gdouble y = event->y;
-    int button = event->button;
-    Window *window = (Window *)user_data;
-    if (window->OnMouseRelease)
-        window->OnMouseRelease(x, y, button);
-    return TRUE;
-}
-
- gboolean on_motion_notify_event(GtkWidget *widget, GdkEventMotion *event, gpointer user_data)
-{
-    gdouble x = event->x;
-    gdouble y = event->y;
-    Window *window = (Window *)user_data;
-    if (window->OnMousMove)
-        window->OnMousMove(x, y);
-    return TRUE;
-}
-
- gboolean on_key_release_event(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
-{
-
-    guint keyval = event->keyval;
-    Window *window = (Window *)user_data;
-
-
-    if (window->OnKeyPress)
-    {
-        if ( window->OnKeyRelease(keyval))
-            return true;
-    }
-    
-    return false;
-}
-
- gboolean on_key_press_event(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
-{
-
-    guint keyval = event->keyval;
-    Window *window = (Window *)user_data;
-    if (window->OnKeyPress)
-    {
-        if (window->OnKeyPress(keyval))
-            return true;
-    }
-    
-    return false;
-}
 
  gboolean on_window_configure_event(GtkWidget *widget, GdkEventConfigure *event, gpointer user_data)
 {
@@ -233,13 +172,7 @@ void Window::CreateTopLevel(const std::string &title, int width, int height)
     g_signal_connect(m_widget, "destroy", G_CALLBACK(on_destroy), this);
     g_signal_connect(m_widget, "delete-event", G_CALLBACK(on_window_close_event), this);
     g_signal_connect(m_widget, "configure-event", G_CALLBACK(on_window_configure_event), this);
-    g_signal_connect(m_widget, "key-press-event", G_CALLBACK(on_key_press_event), this);
-    g_signal_connect(m_widget, "key-release-event", G_CALLBACK(on_key_release_event), this);
-    g_signal_connect(m_widget, "button-press-event", G_CALLBACK(on_button_press_event), this);
-    g_signal_connect(m_widget, "button-release-event", G_CALLBACK(on_button_release_event), this);
-    g_signal_connect(m_widget, "motion-notify-event", G_CALLBACK(on_motion_notify_event), this);
-    
-
+ 
 
   GtkWidget* menu = gtk_menu_new();
 
@@ -268,11 +201,6 @@ void Window::CreateTopLevel(const std::string &title, int width, int height)
     g_signal_connect(m_widget, "destroy", G_CALLBACK(on_destroy), this);
     g_signal_connect(m_widget, "delete-event", G_CALLBACK(on_window_close_event), this);
     g_signal_connect(m_widget, "configure-event", G_CALLBACK(on_window_configure_event), this);
-    g_signal_connect(m_widget, "key-press-event", G_CALLBACK(on_key_press_event), this);
-    g_signal_connect(m_widget, "key-release-event", G_CALLBACK(on_key_release_event), this);
-    g_signal_connect(m_widget, "button-press-event", G_CALLBACK(on_button_press_event), this);
-    g_signal_connect(m_widget, "button-release-event", G_CALLBACK(on_button_release_event), this);
-    g_signal_connect(m_widget, "motion-notify-event", G_CALLBACK(on_motion_notify_event), this);
 
    // idle_id = g_idle_add(on_idle_callback, this);
     isMainWindow = false;
@@ -299,11 +227,6 @@ void Window::CreateDialog(Window *parent, const std::string &title, int width, i
     g_signal_connect(m_widget, "destroy", G_CALLBACK(on_destroy), this);
     g_signal_connect(m_widget, "delete-event", G_CALLBACK(on_window_close_event), this);
     g_signal_connect(m_widget, "configure-event", G_CALLBACK(on_window_configure_event), this);
-    g_signal_connect(m_widget, "key-press-event", G_CALLBACK(on_key_press_event), this);
-    g_signal_connect(m_widget, "key-release-event", G_CALLBACK(on_key_release_event), this);
-    g_signal_connect(m_widget, "button-press-event", G_CALLBACK(on_button_press_event), this);
-    g_signal_connect(m_widget, "button-release-event", G_CALLBACK(on_button_release_event), this);
-    g_signal_connect(m_widget, "motion-notify-event", G_CALLBACK(on_motion_notify_event), this);
 
    // idle_id = g_idle_add(on_idle_callback, this);
    

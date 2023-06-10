@@ -6,6 +6,7 @@ class MenuShell;
 class MenuBar;
 class Menu;
 class SubMenu;
+class ToolBar;
 
 class IMenuItem : public Widget
 {
@@ -195,4 +196,106 @@ protected:
 
     std::vector<std::shared_ptr<Menu>> m_menus;
     std::vector<std::shared_ptr<MenuItem>> m_items;
+};
+
+
+
+class ToolItem : public Widget
+{
+    public:
+        ToolItem();
+        virtual ~ToolItem();
+        int GetIndex();
+    protected:
+        friend class ToolBar;
+        friend class ToolButton;
+        friend class ToolButtonToggle;
+        friend class ToolSeparator;
+
+        GtkToolItem *m_Item;
+        ToolBar *m_toolBar{nullptr};
+        int m_index{0};
+};
+
+class ToolSeparator : public ToolItem
+{
+    public:
+        ToolSeparator();
+        ~ToolSeparator()=default;
+    protected:
+        friend class ToolBar;
+  
+};
+
+class ToolButtonToggle : public ToolItem
+{
+    public:
+     
+        ToolButtonToggle(const std::string &label, bool active);
+
+        void SetActive(bool value);
+        bool GetActive();
+
+        virtual ~ToolButtonToggle();
+    protected:
+        friend class ToolBar;
+           ToolButtonToggle()=default;
+        GtkToggleToolButton *m_toolButton;
+};
+
+class ToolRadioButton : public ToolButtonToggle
+{
+    public:
+       
+        ToolRadioButton(const std::string &label);
+        ToolRadioButton(ToolRadioButton* parent,const std::string &label);
+
+       ToolRadioButton * AddRadioButtom(const std::string &label,int pos =-1);
+
+        
+        virtual ~ToolRadioButton();
+    protected:
+         ToolRadioButton()=default;
+        friend class ToolBar;
+        GtkRadioToolButton *m_toolButton;
+};
+
+class ToolButton : public ToolItem
+{
+    public:
+        ToolButton(const std::string &label);
+        ToolButton( const std::string &stockIcon, const std::string &label);
+        virtual ~ToolButton();
+    protected:
+        friend class ToolBar;
+        GtkToolButton *m_toolButton;
+};
+
+
+class ToolBar : public Widget
+{
+  public:
+    ToolBar(ToolBarStyle style);
+    virtual  ~ToolBar();
+
+    void Insert(ToolItem *item,int pos=-1);
+
+
+    ToolButton *AddButton(const std::string &label, const std::string &ID = "ToolButton",int pos=-1);
+    ToolButton *AddButton(const std::string &stockIcon, const std::string &label, const std::string &ID = "ToolButton",int pos=-1);
+    ToolButtonToggle *AddButtonToggle(const std::string &label, bool active, const std::string &ID = "ToolButtonToggle",int pos=-1);
+    ToolRadioButton *AddRadioButton(const std::string &label, const std::string &ID = "ToolRadioButton",int pos=-1);
+   
+    ToolSeparator *AddSeparator(int pos=-1);
+
+
+protected:
+
+    friend class ToolItem;
+    friend class ToolButton;
+    friend class ToolButtonToggle;
+    friend class ToolSeparator;
+
+    GtkToolbar *m_toolbar;
+    std::vector<std::shared_ptr<ToolItem>> m_items;
 };

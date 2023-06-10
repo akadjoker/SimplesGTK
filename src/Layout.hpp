@@ -40,6 +40,7 @@ public:
 
     MenuBar *CreateMenuBar(const std::string &ID = "MenuBar");
     Menu    *CreateMenu( const std::string &ID="Menu");
+    ToolBar *CreateToolBar(ToolBarStyle style,const std::string &ID = "ToolBar");
 
     ProgressBar *CreateProgressBar(const std::string &ID = "ProgressBar");
     LevelBar *CreateLevelBar(const std::string &ID = "LevelBar");

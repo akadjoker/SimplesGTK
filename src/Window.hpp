@@ -176,11 +176,7 @@ public:
     std::function<bool()> OnClose;
     std::function<bool(int, int)> OnResize;
     std::function<bool(int, int)> OnMove;
-    std::function<bool(int)> OnKeyPress;
-    std::function<bool(int)> OnKeyRelease;
-    std::function<bool(int, int, int)> OnMousePress;
-    std::function<bool(int, int, int)> OnMouseRelease;
-    std::function<bool(int, int)> OnMousMove;
+
 
 protected:
     friend class FileChooser;

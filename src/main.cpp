@@ -1,4 +1,7 @@
 #include <iostream>
+#include "Layout.hpp"
+#include "Menus.hpp"
+#include "Widget.hpp"
 #include "Widgets.hpp"
 
 static float progress = 0.0;
@@ -71,18 +74,57 @@ void create_main(Application *app)
     {
         return false;
     };
+    
+
+    window->AddMouseEvents();
+    window->AddKeyEvents();
+
+
+    window->OnKeyPress = [&](int key)
+    {
+    
+        if (key == KEY_Escape)
+        {
+            window->Close();
+        }
+        return true;
+    };
 
 
 
     FixedLayout *fixed = window->CreateFixedLayout("layout");
-    fixed->AddMouseEvents();
+
+    BoxLayout *boxToolBar = window->CreateBoxLayout( Orientation::Vertical,1);
+
+    ToolBar *toolBar = boxToolBar->CreateToolBar(ToolBarStyle::Both, "toolBar");
+
+
+
+     toolBar->AddButton("document-new","New","idNew");
+     toolBar->AddSeparator();
+     toolBar->AddButton("document-open","Open","idOpen");
+     toolBar->AddButton("document-save","Save","idSave");
+     toolBar->AddButton("document-save-as","Save As","idSaveAs");
+        toolBar->AddSeparator();
+    toolBar->AddButtonToggle("Print",true,"idPrint");
+        toolBar->AddSeparator();
+     ToolRadioButton *aa= toolBar->AddRadioButton("Radio 1","idRadio1");
+    aa->AddRadioButtom("idRadio2");
+    aa->AddRadioButtom("idRadio3");
+    aa->AddRadioButtom("idRadio4");
+
+    boxToolBar->PackStart(toolBar,true,true,5); 
+
+
+    fixed->Add(boxToolBar,0,0,800,30);
+
+
 
 
 
 
     MenuBar *menuBar = window->CreateMenuBar("MenuBar");
-
-
+    
 
      SubMenu *fileMenu    = menuBar->CreateSubMenu("FileMenu", "idFile", "File");
      SubMenu *compileMenu = menuBar->CreateSubMenu("CompileMenu", "idCompile", "Compile");
@@ -125,7 +167,7 @@ void create_main(Application *app)
 
 
 
-    fixed->Add(menuBar,0,0,800,30);
+   // fixed->Add(menuBar,0,0,800,30);
 
     
     Menu * popUp = window->CreateMenu( "idPopUp");
@@ -138,14 +180,13 @@ void create_main(Application *app)
 
 
     Button *b = fixed->CreateButton("button1", "Button 1");
-     fixed->Add(b,100,40,100,30);
+     fixed->Add(b,100,140,100,30);
      b->OnClick  = [&]() -> bool
      {
-          popUp->Popup(fixed,500,500,Gravity::Center,Gravity::Center);
          std::cout << "Button 1 Clicked" << std::endl;
          return true;
      };
-     fixed->OnMousePressed = [&](int x, int y, int button) -> bool
+     window->OnMousePress = [&](int x, int y, int button) -> bool
      {
         popUp->Popup(fixed,x,y,Gravity::Top,Gravity::TopLeft);
          std::cout << "Mouse Pressed: " << x << "," << y << std::endl;
