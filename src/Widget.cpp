@@ -174,7 +174,7 @@ bool Widget::DoMouseMove(int x, int y)
 
 bool Widget::DoKeyPress(int key)
 {
-    std::cout << "keyval: " << key << std::endl;
+   // std::cout << "keyval: " << key << std::endl;
 
     if (OnKeyPress)
         return OnKeyPress(key);
@@ -183,7 +183,7 @@ bool Widget::DoKeyPress(int key)
 
 bool Widget::DoKeyRelease(int key)
 {
-        std::cout << "keyval: " << key << std::endl;
+    //    std::cout << "keyval: " << key << std::endl;
 
     if (OnKeyRelease)
         return OnKeyRelease(key);

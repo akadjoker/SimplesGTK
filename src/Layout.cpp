@@ -408,8 +408,7 @@ ScrollLayout::ScrollLayout()
     m_scroll = GTK_SCROLLED_WINDOW(m_widget);
     m_container = GTK_CONTAINER(m_widget);
 
-    gtk_scrolled_window_set_policy(m_scroll,
-                                   GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+    gtk_scrolled_window_set_policy(m_scroll, GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
     gtk_widget_set_vexpand(m_widget, TRUE);
     gtk_widget_set_hexpand(m_widget, TRUE);

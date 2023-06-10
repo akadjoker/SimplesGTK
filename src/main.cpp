@@ -9,57 +9,26 @@ static float progress = 0.0;
 void window_idle(Window *win)
 {
 
-    if (win->Contains("layout"))
-    {
-        FixedLayout *grid =  dynamic_cast<FixedLayout*>(win->GetLayoutByID("layout"));
-
-        if (grid->Contains("progressBar"))
-        {
-         ProgressBar *bar =  dynamic_cast<ProgressBar*>(grid->GetWidgetByID("progressBar"));
-          bar->SetFraction(progress);
-
-                // float progress = 0.0;
-                // while (progress <= 1.0) 
-                // {
-                //     bar->SetFraction(progress);
-                //     progress += 0.1;
-                //     std::cout << "Progress: " << progress << std::endl;
-                //     win->ProcessEvents();  // Atualiza a interface gráfica
-                //     g_usleep(50000);      // Aguarda 500ms
-                // }
-             //make   bar->SetFraction(1.0);
-        }
-        } else
-        {
-            std::cout << "Não encontrou o layout" << std::endl;
-        }
-
-    // Exibição do progresso completo
-    
-
-
+  
 
     Event event;
-    while(win->pollEvent(event))
+    while (win->pollEvent(event))
     {
-      //  std::cout << "Event type: " << event.type << std::endl;
+        //  std::cout << "Event type: " << event.type << std::endl;
         switch (event.type)
         {
-            case Event::ButtonClick:
-                std::cout << "Button Clicked" <<event.buttonClick.button->GetId() << std::endl;
-                progress += 0.1;
-                break;
-            case Event::ButtonCheck:
-                std::cout << "Button Checked" << std::endl;
-                break;
-            default:
-                break;
+        case Event::ButtonClick:
+            std::cout << "Button Clicked" << event.buttonClick.button->GetId() << std::endl;
+  
+            break;
+        case Event::ButtonCheck:
+            std::cout << "Button Checked" << std::endl;
+            break;
+        default:
+            break;
         }
     }
-    
 }
-
-
 
 void create_main(Application *app)
 {
@@ -74,15 +43,12 @@ void create_main(Application *app)
     {
         return false;
     };
-    
 
     window->AddMouseEvents();
     window->AddKeyEvents();
 
-
     window->OnKeyPress = [&](int key)
     {
-    
         if (key == KEY_Escape)
         {
             window->Close();
@@ -90,143 +56,12 @@ void create_main(Application *app)
         return true;
     };
 
-
-
     FixedLayout *fixed = window->CreateFixedLayout("layout");
 
-    BoxLayout *boxToolBar = window->CreateBoxLayout( Orientation::Vertical,1);
 
-    ToolBar *toolBar = boxToolBar->CreateToolBar(ToolBarStyle::Both, "toolBar");
-
-
-
-     toolBar->AddButton("document-new","New","idNew");
-     toolBar->AddSeparator();
-     toolBar->AddButton("document-open","Open","idOpen");
-     toolBar->AddButton("document-save","Save","idSave");
-     toolBar->AddButton("document-save-as","Save As","idSaveAs");
-        toolBar->AddSeparator();
-    toolBar->AddButtonToggle("Print",true,"idPrint");
-        toolBar->AddSeparator();
-     ToolRadioButton *aa= toolBar->AddRadioButton("Radio 1","idRadio1");
-    aa->AddRadioButtom("idRadio2");
-    aa->AddRadioButtom("idRadio3");
-    aa->AddRadioButtom("idRadio4");
-
-    boxToolBar->PackStart(toolBar,true,true,5); 
-
-
-    fixed->Add(boxToolBar,0,0,800,30);
-
-
-
-
-
-
-    MenuBar *menuBar = window->CreateMenuBar("MenuBar");
-    
-
-     SubMenu *fileMenu    = menuBar->CreateSubMenu("FileMenu", "idFile", "File");
-     SubMenu *compileMenu = menuBar->CreateSubMenu("CompileMenu", "idCompile", "Compile");
-     SubMenu *optionsMenu = menuBar->CreateSubMenu("OptionsMenu", "idOptions", "Options");
-
-   
-     MenuItem *quitMi = fileMenu->AddItem("Quit");
-     MenuItem *openMi = fileMenu->AddItem("Open");
-
-
-
-    MenuItem *stopMi    = compileMenu->AddItem("Build");
-    CheckMenuItem *runMi     = compileMenu->AddCheckItem(true,"Run");
-    
-
-
-    runMi->SetDrawAsRadio(true);
-    compileMenu->AddSeparator();
-
-    RadioMenuItem *debugMi   = compileMenu->AddRadioItem("Debug");
-    debugMi->AddRadioItem("Release","idRelease");
-    debugMi->AddRadioItem("Profile","idProfile");
-    compileMenu->AddSeparator();
-    
-
-
-    SubMenu * menuCompiler = compileMenu->AddSubMenu("idCompile", "Compile", "Compile");
-  
-    menuCompiler->AddItem("Linux","idLinux");
-    menuCompiler->AddItem("Android","idAndroid");
-    menuCompiler->AddItem("Web","idWeb");
-
-    SubMenu * menuOptions = menuCompiler->AddSubMenu("idOptions", "Options", "Options");
-    menuOptions->AddItem("Debug","idDebug");
-    menuOptions->AddItem("Release","idRelease");
-    menuOptions->AddItem("Profile","idProfile");
-
-
-  
-
-
-
-   // fixed->Add(menuBar,0,0,800,30);
-
-    
-    Menu * popUp = window->CreateMenu( "idPopUp");
-          MenuItem  *item= popUp->CreateItem("Item 1", "idItem1");
-          popUp->Append(item);
-                     item= popUp->CreateItem("Item 2", "idItem2");
-          popUp->Append(item);
-
-     
-
-
-    Button *b = fixed->CreateButton("button1", "Button 1");
-     fixed->Add(b,100,140,100,30);
-     b->OnClick  = [&]() -> bool
-     {
-         std::cout << "Button 1 Clicked" << std::endl;
-         return true;
-     };
-     window->OnMousePress = [&](int x, int y, int button) -> bool
-     {
-        popUp->Popup(fixed,x,y,Gravity::Top,Gravity::TopLeft);
-         std::cout << "Mouse Pressed: " << x << "," << y << std::endl;
-         return true;
-     };
-
-    ProgressBar *p = fixed->CreateProgressBar("progressBar");
-    p->SetOrientation(Orientation::Vertical);
-    fixed->Add(p,200,100,10,100);
-
-    LevelBar *l = fixed->CreateLevelBar(0.0,100.0,"levelBar");
-    l->SetValue(70.7);
-    l->SetOrientation(Orientation::Vertical);
-    fixed->Add(l,20,120,10,100);
-
-
-    
 
     window->Add(fixed);
 
-    // FixedLayout *fixed = window->CreateFixedLayout("layout");
-
-    // Button *button = fixed->CreateButton("button1", "Button 1");
-    // fixed->Add(button,10,10,100,30);
-   
-
-    // window->Add(fixed);
-  
-  /*
-   GtkWidget* button1 = gtk_button_new_with_label("Botão 1");
-    gtk_grid_attach(GTK_GRID(grid), button1, 0, 0, 1, 1); // (widget, left, top, width, height)
-
-    GtkWidget* button2 = gtk_button_new_with_label("Botão 2");
-    gtk_grid_attach(GTK_GRID(grid), button2, 1, 0, 1, 1);
-
-    GtkWidget* button3 = gtk_button_new_with_label("Botão 3");
-    gtk_grid_attach(GTK_GRID(grid), button3, 0, 1, 2, 1);
-
-  */
-  
     window->Show();
 
     window->OnIdle = [&]()
