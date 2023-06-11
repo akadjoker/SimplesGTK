@@ -57,17 +57,18 @@ class GTK_API_EXPORT Application
         virtual ~Application();
 
         Window * CreateWindow(const std::string &title, int width, int height);
-        Window * CreatePopUpWindow(const std::string &title, int width, int height);
-        Window * CreateDialog(Window* parent, const std::string &title, int width, int height, bool isModal);
+        Window * CreateTopLevel(const std::string &title, int width, int height);
+
 
         int  Run();
         int  Run(int argc, char **argv);
         void Quit();
 
-        std::function<bool()> OnActivate;  
+        std::function<bool()> OnActivate{nullptr};  
 
 
     protected:
+        friend class Window;
         std::vector<std::shared_ptr<Window>> m_windows;
         GtkApplication *m_app;        
         
@@ -121,15 +122,30 @@ public:
     Window();
     ~Window();
 
-    void CreateTopLevel(const std::string &title, int width, int height);
-    void CreatePopUp(const std::string &title, int width, int height);
-    void CreateDialog(Window *parent, const std::string &title, int width, int height, bool isModal);
+    void Init(Application *app, const std::string &title, int width, int height);
+    void InitTopLevel(const std::string &title, int width, int height);
+    void InitPopUp(const std::string &title, int width, int height);
+    void InitDialog(Window *parent, const std::string &title, int width, int height, bool isModal);
 
-    Window *CreateDialog( const std::string &title, int width, int height, bool isModal);
+    Window  *CreateDialog( const std::string &title, int width, int height, bool isModal);
+    Window  *CreatePopUp( const std::string &title, int width, int height);
+
 
     bool popEvent(Event& event);
     void pushEvent(const Event& event);
     bool pollEvent(Event& event);
+
+    bool DoResize(int width, int height);
+    bool DoMove(int x, int y);
+
+    bool DoIdle();
+    bool DoClose(); //  if the window should be closed
+    void DoExit();   // application exit
+
+
+    
+    
+
 
     void SetPosition(int x, int y);
     void SetResizable(bool resizable);
@@ -158,6 +174,7 @@ public:
     RadioGroup *CreateRadioGroup(const std::string &label, Orientation orientation, int spacing,const std::string &id="RadioGroup");
     CheckGroup *CreateCheckGroup(const std::string &label, Orientation orientation, int spacing,const std::string &id="CheckGroup");
     GroupBox   *CreateGroupBox(const std::string &label, Orientation orientation, int spacing,const std::string &id="GroupBox");
+    Notebook *CreateNotebook(const std::string &ID = "Notebook");
         
 
 
@@ -172,29 +189,71 @@ public:
     int MessageBox(const std::string &title, const std::string &message, DialogType type, DialogButtons buttons);
 
 public:
-    std::function<bool()> OnIdle;
-    std::function<bool()> OnClose;
-    std::function<bool(int, int)> OnResize;
-    std::function<bool(int, int)> OnMove;
+    std::function<bool()> OnIdle{nullptr};
+    std::function<bool()> OnClose{nullptr};
+    std::function<bool(int, int)> OnResize{nullptr};
+    std::function<bool(int, int)> OnMove{nullptr};
 
 
 protected:
+    struct WindowState
+    {
+        int x;
+        int y;
+        int width;
+        int height;
+    };
+    WindowState current_state{-1, -1, -1, -1};
     friend class FileChooser;
     friend class FolderChooser;
     friend class Dialog;
     friend class Application;
     friend class Menu;
-    friend gboolean on_window_configure_event(GtkWidget *widget, GdkEventConfigure *event, gpointer user_data);
-
+  
     GtkWindow *m_window;
-    guint idle_id;
+    guint idle_id{0};
     bool isMainWindow{false};
     bool useLoop{false};
     std::vector<std::shared_ptr<Dialog>> m_dialogs;
+    
     std::queue<Event> m_events;  
 
     int m_width{0};
     int m_height{0};
     int m_x{0};
     int m_y{0};
+};
+
+//https://www.manpagez.com/html/glib/glib-2.56.0/glib-Spawning-Processes.php#g-spawn-close-pid
+class CommandExecutor 
+{
+public:
+    CommandExecutor()=default;
+    ~CommandExecutor()=default;
+    int execute(const std::string& command) ;
+    int getStatus() const { return m_status; }
+    const std::string& getResult() const { return m_result; }
+    const std::string& getError() const { return m_error; }
+private:
+    int m_status;
+    std::string m_result;
+    std::string m_error;
+};
+
+class Process
+{
+    public:
+        Process();
+        virtual ~Process();
+        bool Execute(const std::string &command) ;
+        bool Run(const std::string &command) ;
+        int GetStatus() const { return m_status; }
+        std::string readOutput() ;
+        std::string readError();
+    private:
+    int m_status;
+   
+    GPid pid;
+    gint out_fd, err_fd;
+    gchar *out, *err;
 };

@@ -10,6 +10,6 @@
 #include "Layout.hpp"
 #include "Bars.hpp"
 #include "Menus.hpp"
-
+#include "Lists.hpp"
 
 #endif // GTK_WIDGETS_HPP

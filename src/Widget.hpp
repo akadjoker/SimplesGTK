@@ -144,6 +144,7 @@ enum class DialogType
 class Widget;
 class Button;
 class Window;
+class Notebook;
 
 
 class Event
@@ -182,23 +183,31 @@ public:
     
     enum EventType
     {
-        Closed,                 
+        Quit,
+        Close,
+        Show,
+        Hide,
         Resized,                
         LostFocus,              
-        GainedFocus,            
+        GainedFocus,  
+        Enter,
+        Leave,
+        Added,
+        Removed,          
         KeyPressed,           
         KeyReleased,          
         MouseButtonPressed,   
         MouseButtonReleased,  
         MouseMoved,      
-        ButtonClick,  
-        ButtonCheck,   
+        Click,  
+        Checked,   
         Count                 
     };
     EventType type; 
 
     union
     {
+
         SizeEvent             size;    
         MouseMoveEvent        mouseMove;       
         MouseButtonEvent      mouseButton;    
@@ -217,11 +226,29 @@ public:
 
     
     Widget    *GetLayout() ;
+
+
+    void SetDraggable(bool draggable,int button=0);
    
     virtual void OnAdd();//event handler if this widget is on Container so, call show all on this widget
-    virtual void AddMouseEvents();
-    virtual void AddKeyEvents();
+ 
 
+    virtual bool DoFocus();
+    virtual bool DoLostFocus();
+    
+    virtual bool DoEnter();
+    virtual bool DoLeave();
+
+    virtual bool DoDrop(int x, int y, const std::string &data);
+
+    virtual bool DoMouseDown(int x, int y, int button);
+    virtual bool DoMouseUp(int x, int y, int button);
+    virtual bool DoMouseMove(int x, int y);
+    virtual bool DoKeyDown(int key,int state);
+    virtual bool DoKeyUp(int key,int sate);
+
+    void SetProcessEvents(bool process=true);
+    void SetAcceptDrops(bool accept=true);
 
 
     void SetTag(int tag) ;
@@ -238,24 +265,19 @@ public:
     void SetId(const std::string &id) ;
     const std::string &GetId() const ;
 
-    bool DoMousePress(int x, int y, int button);
-    bool DoMouseRelease(int x, int y, int button);
-    bool DoMouseMove(int x, int y);
-
-    bool DoKeyPress(int key);
-    bool DoKeyRelease(int key);
 
 
 
     std::function<bool()> OnClick{nullptr};
     std::function<bool(bool)> OnCheck{nullptr};
  
+    std::function<bool(int,int, const std::string &text)> OnDrop{nullptr};
 
     std::function<bool(const std::string &text)> OnTextReturn{nullptr};
     std::function<bool(const std::string &text)> OnTextChange{nullptr};
 
-    std::function<bool(int)> OnKeyPress{nullptr};
-    std::function<bool(int)> OnKeyRelease{nullptr};
+    std::function<bool(int,int)> OnKeyPress{nullptr};
+    std::function<bool(int,int)> OnKeyRelease{nullptr};
 
     std::function<bool(int, int, int)> OnMousePress{nullptr};
     std::function<bool(int, int, int)> OnMouseRelease{nullptr};
@@ -271,16 +293,29 @@ protected:
     friend class GroupBox;
     friend class Group;
     friend class Layout;
+    friend class Button;
+    friend class Label;
+    friend class Notebook;
     friend class GridLayout;
     friend class Menu;
     friend class MenuItem;
     friend class MenuBar;
+    friend class ToolBar;
+    friend class ToolButton;
+    friend class ToolItem;
+    friend class ListBox;
+    friend class ComboBox;
+    friend class ComboBoxText;
+
     GtkWidget   *m_widget{NULL};
     Widget      *m_layout{nullptr};
     Window      *m_mainWindow{nullptr};
     bool        isShow{false};
     int m_tag{0};
     std::string m_id;
+    gulong handler_id{0};
+    gulong drops_handler_id{0};
+
 };
 
 #define KEY_VoidSymbol 0xffffff

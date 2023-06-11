@@ -10,7 +10,7 @@ void on_button_clicked(GtkWidget *widget, gpointer data)
 
 }
 
-static void on_button_toggled(GtkToggleButton *button, gpointer user_data) 
+ void on_button_toggled(GtkToggleButton *button, gpointer user_data) 
 {
     ToggleButton *wd = (ToggleButton*)user_data;
     gboolean isChecked = gtk_toggle_button_get_active(button);
@@ -18,6 +18,12 @@ static void on_button_toggled(GtkToggleButton *button, gpointer user_data)
      
    
 }
+void on_drag_data_get(GtkWidget *widget, GdkDragContext *context,
+                      GtkSelectionData *data, guint info, guint time, gpointer user_data)
+{
+   // gtk_selection_data_set(data, gtk_selection_data_get_target(data), 8, (guchar *)"", 0);
+}
+
 
 IButton::~IButton()
 {
@@ -29,10 +35,10 @@ void Button::DoClick()
     assert(m_widget);
     assert(m_mainWindow);
 
-    Event event;
-    event.type        = Event::ButtonClick;
-    event.buttonClick.button = this;
-    m_mainWindow->pushEvent(event);
+    // Event event;
+    // event.type        = Event::ButtonClickEvent;
+    // event.buttonClick.button = this;
+    // m_mainWindow->pushEvent(event);
 
     if (OnClick)
         OnClick();
@@ -43,11 +49,11 @@ void Button::DoCheck(bool value)
     assert(m_widget);
     assert(m_mainWindow);
 
-    Event event;
-    event.type        = Event::ButtonCheck;
-    event.buttonCheck.button = this;
-    event.buttonCheck.checked = value;
-    m_mainWindow->pushEvent(event);
+    // Event event;
+    // event.type        = Event::ButtonCheckEvent;
+    // event.buttonCheck.button = this;
+    // event.buttonCheck.checked = value;
+    // m_mainWindow->pushEvent(event);
 
     if (OnCheck)
         OnCheck(value);
@@ -80,7 +86,10 @@ Button::Button(const std::string &label,bool mnemonic)
     g_signal_connect(m_widget, "clicked", G_CALLBACK(on_button_clicked), this);
     
 
-    
+  
+
+ //   g_signal_connect(m_widget, "drag-data-get", G_CALLBACK(on_drag_data_get), NULL);
+
 }
 
 void Button::SetLabel(const std::string &label)

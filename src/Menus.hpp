@@ -11,7 +11,7 @@ class Menu;
 class SubMenu;
 class ToolBar;
 
-class IMenuItem : public Widget
+class GTK_API_EXPORT IMenuItem : public Widget
 {
 public:
     IMenuItem() = default;
@@ -27,13 +27,13 @@ protected:
     Menu *m_mParent{nullptr};
 };
 
-class MenuSeparator : public IMenuItem
+class GTK_API_EXPORT  MenuSeparator : public IMenuItem
 {
 public:
     MenuSeparator();
 };
 
-class MenuItem : public IMenuItem
+class GTK_API_EXPORT MenuItem : public IMenuItem
 {
 public:
     MenuItem();
@@ -54,7 +54,7 @@ protected:
     bool m_ignoreEvent{false};
 };
 
-class CheckMenuItem : public MenuItem
+class GTK_API_EXPORT CheckMenuItem : public MenuItem
 {
 public:
     CheckMenuItem() = default; // pk do RadioMenuItem
@@ -76,7 +76,7 @@ protected:
     GtkCheckMenuItem *m_checkItem{NULL};
 };
 
-class RadioMenuItem : public CheckMenuItem
+class GTK_API_EXPORT RadioMenuItem : public CheckMenuItem
 {
 public:
     RadioMenuItem();
@@ -92,7 +92,7 @@ protected:
     GtkRadioMenuItem *m_radioItem{NULL};
 };
 
-class MenuShell : public Widget
+class GTK_API_EXPORT MenuShell : public Widget
 {
 public:
     MenuShell();
@@ -110,7 +110,7 @@ protected:
     GtkMenuShell *m_menuShell{nullptr};
 };
 
-class Menu : public MenuShell
+class GTK_API_EXPORT Menu : public MenuShell
 {
 
 public:
@@ -144,7 +144,7 @@ protected:
     std::vector<std::shared_ptr<IMenuItem>> m_items;
 };
 
-class SubMenu : public Menu
+class GTK_API_EXPORT SubMenu : public Menu
 {
 public:
     SubMenu(const std::string &id, const std::string &itemId, const std::string &itemLabel, bool mnemonic = false, int tag = 0);
@@ -171,7 +171,7 @@ protected:
     std::shared_ptr<MenuItem> m_main_item;
 };
 
-class MenuBar : public MenuShell
+class GTK_API_EXPORT MenuBar : public MenuShell
 {
 public:
     MenuBar();
@@ -196,7 +196,7 @@ protected:
 // ToolBar
 //***************************************************************************************
 
-class ToolItem : public Widget
+class GTK_API_EXPORT ToolItem : public Widget
 {
 public:
     ToolItem();
@@ -216,7 +216,7 @@ protected:
     int m_index{0};
 };
 
-class ToolSeparator : public ToolItem
+class GTK_API_EXPORT ToolSeparator : public ToolItem
 {
 public:
     ToolSeparator();
@@ -226,7 +226,7 @@ protected:
     friend class ToolBar;
 };
 
-class ToolButtonToggle : public ToolItem
+class GTK_API_EXPORT ToolButtonToggle : public ToolItem
 {
 public:
     ToolButtonToggle(const std::string &label, bool active);
@@ -243,7 +243,7 @@ protected:
     ToolButtonToggle() = default;
 };
 
-class ToolRadioButton : public ToolButtonToggle
+class GTK_API_EXPORT ToolRadioButton : public ToolButtonToggle
 {
 public:
     ToolRadioButton(const std::string &label);
@@ -258,7 +258,7 @@ protected:
     friend class ToolBar;
 };
 
-class ToolButton : public ToolItem
+class GTK_API_EXPORT ToolButton : public ToolItem
 {
 public:
     ToolButton(const std::string &label);
@@ -269,7 +269,7 @@ protected:
     friend class ToolBar;
 };
 
-class ToolBar : public Widget
+class GTK_API_EXPORT ToolBar : public Widget
 {
 public:
     ToolBar(ToolBarStyle style);

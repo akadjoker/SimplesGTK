@@ -3,8 +3,6 @@ CFLAGS =-g -Wall -std=c++17 `pkg-config --cflags gtk+-3.0`  # -fsanitize=address
 LDFLAGS = `pkg-config --libs gtk+-3.0` 
 
 
-
-
 SRC_DIR = src
 OBJ_DIR = obj
 BIN = main

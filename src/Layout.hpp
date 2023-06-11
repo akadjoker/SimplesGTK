@@ -5,6 +5,7 @@
 #include "Text.hpp"
 #include "Bars.hpp"
 #include "Menus.hpp"
+#include "Lists.hpp"
 
 
 class GTK_API_EXPORT Layout : public Widget
@@ -16,6 +17,9 @@ public:
     virtual void Add(Widget *widget);
     virtual void Add(Layout *layout);
 
+
+    void DoAdded();
+    void DoRemoved();
   
 
     void SetBoder(int border);
@@ -38,6 +42,11 @@ public:
     TextEdit *CreateTextEdit(const std::string &text, const std::string &ID = "TextEdit");
     TextView *CreateTextView(const std::string &text, const std::string &ID = "TextView");
 
+    ListBox *CreateListBox(const std::string &ID = "ListBox");
+    ComboBox *CreateComboBox(const std::string &ID = "ComboBox");
+    ComboBoxText *CreateComboBoxText(bool hasEntry = true,const std::string &ID = "ComboBoxText");
+
+    
     MenuBar *CreateMenuBar(const std::string &ID = "MenuBar");
     Menu    *CreateMenu( const std::string &ID="Menu");
     ToolBar *CreateToolBar(ToolBarStyle style,const std::string &ID = "ToolBar");
@@ -79,6 +88,8 @@ public:
 
     void PackStart(Widget *widget, bool expand = false, bool fill = false, int padding = 0);
     void PackEnd(Widget *widget, bool expand = false, bool fill = false, int padding = 0);
+
+    
   
 private:
   void packStart(GtkWidget *widget, bool expand = false, bool fill = false, int padding = 0);
@@ -99,10 +110,13 @@ public:
 
     void Add(Widget *widget, int x, int y);
     void Add(Widget *widget, int x, int y, int width, int height);
+
+    void SetCandDrag(bool draggable, int button = 0);
     
 
 protected:
     GtkFixed *m_fixed;
+    gulong drag_id{0};
     friend class Window;
 };
 
@@ -142,4 +156,46 @@ public:
 protected:
     GtkViewport *m_viewport;
     friend class Window;
+};
+
+
+class GTK_API_EXPORT StackLayout : public Layout
+{
+};
+
+/*
+gboolean 	change-current-page 	Action
+GtkNotebook* 	create-window 	Run Last
+gboolean 	focus-tab 	Action
+void 	move-focus-out 	Action
+void 	page-added 	Run Last
+void 	page-removed 	Run Last
+void 	page-reordered 	Run Last
+gboolean 	reorder-tab 	Action
+gboolean 	select-page 	Action
+void 	switch-page 	Run Last
+
+
+gboolean 	detachable 	Read / Write
+gchar * 	menu-label 	Read / Write
+gint 	position 	Read / Write
+gboolean 	reorderable 	Read / Write
+gboolean 	tab-expand 	Read / Write
+gboolean 	tab-fill 	Read / Write
+gchar * 	tab-label 	Read / Write
+*/
+class GTK_API_EXPORT Notebook : public Layout
+{
+    public:
+        Notebook();
+        virtual ~Notebook();
+        int AppendPage(Widget *widget, const std::string &label);
+        int PrependPage(Widget *widget, const std::string &label);
+
+        
+        
+    protected:
+        GtkNotebook *m_notebook;
+        
+              
 };
